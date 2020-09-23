@@ -10,7 +10,11 @@ export default () => {
     const {isAuthenticated, loginWithRedirect, logout} = authProvider;
     return (<Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
         <Menu.Item key="1">
-            {!isAuthenticated && (
+            <Link to="/">
+                <Icon type="home"/>
+                <span>Home</span>
+            </Link>
+            <ShowIf show={!isAuthenticated()}>
                 <div
                     onClick={() =>
                         loginWithRedirect({})
@@ -18,31 +22,49 @@ export default () => {
                     <Icon type="login"/>
                     <span>Login</span>
                 </div>
-            )}
-            {isAuthenticated &&
-
-            <Link to="/profile">
-                <Icon type="user"/>
-                <span>Profile</span>
-            </Link>
-            }
+            </ShowIf>
         </Menu.Item>
         <Menu.Item key="2">
-            <Link to="/collections">
-                <Icon type="database"/>
-                <span>Collections</span>
-            </Link>
+            <ShowIf show={isAuthenticated()}>
+                <Link to="/collections">
+                    <Icon type="database"/>
+                    <span>Collections</span>
+                </Link>
+            </ShowIf>
         </Menu.Item>
         <Menu.Item key="3">
-
-            {isAuthenticated &&
+            <ShowIf show={isAuthenticated()}>
+                <div
+                    onClick={() =>
+                        logout()
+                    }>
+                    <Icon type="logout"/>
+                    <span>Logout</span>
+                </div>
+            </ShowIf>
+            {/*{isAuthenticated() &&
             <div
                 onClick={() =>
                     logout()
                 }>
                 <Icon type="logout"/>
                 <span>Logout</span>
-            </div>}
+            </div>}*/}
         </Menu.Item>
     </Menu>)
+}
+
+class ShowIf extends React.Component {
+
+    constructor(props, context) {
+        super(props, context);
+    }
+
+    render() {
+        return this.props.show && this.props.children
+    }
+}
+
+const showIf = (b, component) => {
+    return b && component
 }

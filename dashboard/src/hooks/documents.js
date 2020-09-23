@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 
 import authProvider from "../common/authorization/authProvider";
+import dynamoplus from "../dynamoplus/dynamoplus";
 
 
 export const useCreateDocument = (collection) => {
@@ -11,16 +12,7 @@ export const useCreateDocument = (collection) => {
         setLoading(false)
         try {
             const token = await getTokenSilently()
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collection, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST',
-                body: JSON.stringify(d)
-
-            });
-
-            const responseData = await response.json();
+            const responseData = dynamoplus.documentService.createDocument(collection, d, token)
             console.log(responseData)
             setDocument(responseData)
             setLoading(false)
@@ -39,20 +31,10 @@ export const useGetDocuments = (collectionName, dependencies) => {
         setLoading(true)
         try {
             const token = await getTokenSilently()
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName + "/query", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST',
-                body: JSON.stringify({})
-
-            });
-
-            const responseData = await response.json();
-
-            const documents = responseData.data
-            console.log(documents)
-            setDocuments(documents)
+            const responseData = await dynamoplus.documentService.getAllDocuments(collectionName, token)
+            if (responseData) {
+                setDocuments(responseData.data)
+            }
             setLoading(false)
         } catch (error) {
             setLoading(false)

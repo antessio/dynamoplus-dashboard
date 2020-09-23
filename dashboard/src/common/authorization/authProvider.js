@@ -5,7 +5,9 @@ import dynamoplus from "../../dynamoplus/dynamoplus";
 
 export default {
     // called when the user attempts to log in
-    isAuthenticated: true,
+    isAuthenticated: () => {
+        return localStorage.getItem("token") && localStorage.getItem("username")
+    },
     getTokenSilently: () => {
         console.log("get token silently")
         return localStorage.getItem("token")
@@ -14,17 +16,21 @@ export default {
         console.log("login")
     },
     //https://v2-pro.ant.design/components/login
-    login: ({username, password}) => {
-        localStorage.setItem('username', username);
-        const token = dynamoplus.adminService.login(username, password)
-        localStorage.setItem('token', token)
-        localStorage.setItem("permissions", "ADMIN")
-        return Promise.resolve(token);
+    login: (username, password) => {
+        console.log(username + " and " + password)
+        return dynamoplus.adminService.login(username, password)
+            .then(token => {
+                localStorage.setItem('username', username);
+                localStorage.setItem('token', token)
+                localStorage.setItem("permissions", "ADMIN")
+                window.location = '/'
+            })
     },
     // called when the user clicks on the logout button
     logout: () => {
         localStorage.removeItem('username');
         localStorage.removeItem('permissions');
+        window.location = '/login'
         return Promise.resolve();
     },
     // called when the API returns an error

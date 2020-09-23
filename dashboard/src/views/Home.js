@@ -4,6 +4,7 @@ import React from "react";
 import {Row, Col, Divider, Spin} from 'antd';
 import {useGetCollections} from "../hooks/collections";
 import CollectionList from "../components/collection/list/CollectionList";
+import {useGetIndexes} from "../hooks/indexes";
 
 
 const Home = () => {

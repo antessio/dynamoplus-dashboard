@@ -1,15 +1,43 @@
+import authProvider from "../common/authorization/authProvider";
+
+const axios = require('axios');
+
+
+const instance = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_PATH,
+    timeout: 10000
+});
+instance.interceptors.response.use((response) => {
+    // do something with the response data
+    console.log('Response was received');
+    return response;
+}, err => {
+    // handle the response error
+    console.log(err)
+    const status = err.status || err.response.status;
+    console.log("Response status " + status);
+    if (status === 401) {
+        authProvider.logout().then()
+    }
+    if (status == 403) {
+        authProvider.logout().then()
+        console.log("forbidden")
+    }
+    return Promise.reject(err);
+});
+
+
 export default {
     adminService: {
         login: async (username, password) => {
             const basicAuth = window.btoa(username + ':' + password);
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/admin/login", {
-                headers: {
-                    Authorization: `Basic ` + basicAuth
-                },
-                method: 'POST'
-            });
-            console.log(await response)
-            return await response.token
+
+            return instance.post("/admin/login", '', {headers: {'Authorization': `Basic ` + basicAuth}})
+                .then(response => {
+                    return response.data.token
+                }).catch(err => {
+                    console.log(err)
+                })
         }
     },
     indexService: {
@@ -21,6 +49,25 @@ export default {
                 conditions: conditions,
                 ...(orderingKey && {ordering_key: orderingKey})
             }
+        },
+        getAllIndexes: async (token, startFrom, limit = 10) => {
+            const queryParameters = {
+                limit: limit,
+                startFrom: startFrom
+            }
+            const esc = encodeURIComponent;
+            const query = Object.keys(queryParameters)
+                .filter(k => queryParameters[k])
+                .map(k => esc(k) + '=' + esc(queryParameters[k]))
+                .join('&');
+
+            const queryString = query && query !== '' ? "?" + query : ""
+            return instance.get('/dynamoplus/index' + queryString, '', {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
         },
         getIndexes: async (collectionName, token, startFrom, limit = 10) => {
             const queryParameters = {
@@ -34,12 +81,8 @@ export default {
                 .join('&');
 
             const queryString = query && query !== '' ? "?" + query : ""
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/index/query" + queryString, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST',
-                body: JSON.stringify(
+            return instance.post("/dynamoplus/index/query" + queryString,
+                JSON.stringify(
                     {
                         matches: {
                             eq: {
@@ -48,23 +91,25 @@ export default {
                             }
                         }
                     }
-                )
+                ),
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
 
-            });
-
-            return await response.json();
         },
         createIndex: async (index, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/index", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST',
-                body: JSON.stringify(index)
+            return instance.post("/dynamoplus/index/",
+                JSON.stringify(index),
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
 
-            });
-
-            const responseData = await response.json();
         }
     },
     collectionService: {
@@ -96,36 +141,32 @@ export default {
             }
         },
         createCollection: async (collection, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/collection", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST',
-                body: JSON.stringify(collection)
-
-            });
-
-            return await response.json();
+            return instance.post("/dynamoplus/collection/",
+                JSON.stringify(collection),
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
         },
         getCollection: async (collectionName, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/collection/" + collectionName, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'GET'
-
-            });
-            return await response.json();
+            return instance.get("/dynamoplus/collection/" + collectionName,
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
         },
         getAllCollections: async (token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/collection", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'GET'
-
-            });
-            return await response.json();
+            return instance.get("/dynamoplus/collection/",
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
         }
     },
     documentService: {
@@ -155,14 +196,14 @@ export default {
             }
         },
         getDocument: async (collectionName, id, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName + "/" + id, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'GET'
-            });
 
-            return await response.json();
+            return instance.get("/dynamoplus/" + collectionName + "/" + id,
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
         },
         getAllDocuments: async (collectionName, token, startFrom, limit = 10) => {
             const queryParameters = {
@@ -176,49 +217,42 @@ export default {
                 .join('&');
 
             const queryString = query && query !== '' ? "?" + query : ""
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName + queryString, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'GET'
-            });
-
-            return await response.json();
+            return instance.get("/dynamoplus/" + collectionName + queryString,
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
         },
         createDocument: async (collectionName, document, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST',
-                body: JSON.stringify(document)
-
-            });
-
-            const responseData = await response.json();
+            return instance.post("/dynamoplus/" + collectionName,
+                JSON.stringify(document),
+                {headers: {'Authorization': `Bearer ${token}`}}
+            ).then(response => {
+                return response.data
+            }).catch(err => {
+                console.log(err)
+            })
         },
         updateDocument: async (collectionName, id, document, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName + "/" + id, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'PUT',
-                body: JSON.stringify(document)
-
-            });
-
-            const responseData = await response.json();
+            return instance.put("/dynamoplus/" + collectionName + "/" + id,
+                JSON.stringify(document),
+                {headers: {'Authorization': `Bearer ${token}`}}
+            ).then(response => {
+                return response.data
+            }).catch(err => {
+                console.log(err)
+            })
         },
         deleteDocument: async (collectionName, id, token) => {
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName + "/" + id, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'DELETE'
-
-            });
-
-            const responseData = await response.json();
+            return instance.delete("/dynamoplus/" + collectionName + "/" + id,
+                {headers: {'Authorization': `Bearer ${token}`}}
+            ).then(response => {
+                return response.data
+            }).catch(err => {
+                console.log(err)
+            })
         },
         query: async (collectionName, matches, token, startFrom, limit = 10) => {
             const queryParameters = {
@@ -232,15 +266,14 @@ export default {
                 .join('&');
 
             const queryString = query && query !== '' ? "?" + query : ""
-            const response = await fetch(process.env.REACT_APP_API_BASE_PATH + "/dynamoplus/" + collectionName + "/query" + queryString, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    method: 'POST',
-                    body: JSON.stringify(matches)
-                }
-            );
-            return await response.json();
+            return instance.post("/dynamoplus/" + collectionName + "/query" + queryString,
+                JSON.stringify(matches),
+                {headers: {'Authorization': `Bearer ${token}`}}
+            ).then(response => {
+                return response.data
+            }).catch(err => {
+                console.log(err)
+            })
         }
     }
 }

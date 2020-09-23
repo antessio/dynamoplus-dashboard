@@ -42,7 +42,6 @@ function Collections() {
                 }}
                 onError={(e) => console.error(e)}
             />}
-
             <CollectionList isLoading={isLoading} collections={collections}/>
 
 

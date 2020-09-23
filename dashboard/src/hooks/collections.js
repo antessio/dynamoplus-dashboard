@@ -12,7 +12,6 @@ export const useCreateCollection = () => {
         try {
             const token = await getTokenSilently()
             const responseData = await dynamoplus.collectionService.createCollection(d, token)
-            console.log(responseData)
             setCollection(responseData)
             setLoading(false)
         } catch (error) {
@@ -33,7 +32,7 @@ export const useGetCollections = (dependencies) => {
             const responseData = await dynamoplus.collectionService.getAllCollections(token)
             const collectionList = responseData.data
             console.log(collectionList)
-            setCollections(collections)
+            setCollections(collectionList)
             setLoading(false)
         } catch (error) {
             setLoading(false)
@@ -48,7 +47,7 @@ export const useGetCollections = (dependencies) => {
 
 }
 
-export const useGetCollection = (dependencies) => {
+export const useGetCollection = (collectionName, dependencies) => {
     const {getTokenSilently} = authProvider
     const [collection, setCollection] = useState([])
     const [isLoading, setLoading] = useState(false)
@@ -66,7 +65,7 @@ export const useGetCollection = (dependencies) => {
     };
     useEffect(() => {
         //setLoading(true)
-        getCollection()
+        getCollection(collectionName)
     }, dependencies);
     return [collection, isLoading]
 
