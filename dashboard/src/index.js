@@ -1,27 +1,31 @@
-// src/index.js
+/**
+=========================================================
+* Soft UI Dashboard React - v3.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
 
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
+import { BrowserRouter } from "react-router-dom";
+import App from "App";
 
-import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-
-// A function that routes the user to the right place
-// after login
-const onRedirectCallback = appState => {
-    window.history.replaceState(
-        {},
-        document.title,
-        appState && appState.targetUrl
-            ? appState.targetUrl
-            : window.location.pathname
-    );
-};
+// Soft UI Dashboard React Context Provider
+import { SoftUIControllerProvider } from "context";
 
 ReactDOM.render(
-    <App/>,
-    document.getElementById("root")
+  <BrowserRouter>
+    <SoftUIControllerProvider>
+      <App />
+    </SoftUIControllerProvider>
+  </BrowserRouter>,
+  document.getElementById("root")
 );
-
-serviceWorker.unregister();
