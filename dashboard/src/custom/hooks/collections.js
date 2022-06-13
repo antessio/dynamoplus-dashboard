@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 
-import authProvider from "../common/authorization/authProvider";
-import dynamoplus from "../dynamoplus/dynamoplus";
+import authProvider from 'custom/authorization/authProvider'
+import dynamoplus from 'custom/dynamoplus/dynamoplus'
 
 export const useCreateCollection = () => {
     const {getTokenSilently} = authProvider

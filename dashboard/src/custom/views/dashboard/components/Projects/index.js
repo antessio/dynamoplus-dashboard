@@ -24,15 +24,37 @@ import MenuItem from "@mui/material/MenuItem";
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
+import SuiProgress from "components/SuiProgress";
 
+import { useGetCollections } from "custom/hooks/collections";
 // Soft UI Dashboard Materail-UI example components
 import Table from "examples/Tables/Table";
+import { Avatar } from "@mui/material";
+import SuiAvatar from "components/SuiAvatar";
 
 // Data
-import data from "layouts/dashboard/components/Projects/data";
+
 
 function Projects() {
-  const { columns, rows } = data();
+  //const { columns, rows } = data();
+  const [collections, isLoadingGet] = useGetCollections([]);
+  const columns = [
+      { name: "name", align: "left" },
+      { name: "idKey", align: "center" },
+      { name: "attributes", align: "center" }
+  ];
+  const rows = collections
+  .map(collection => ({
+      name: [(<Avatar>
+        {collection.name.charAt(0)}
+      </Avatar>),collection.name],
+      idKey: collection.id_key,
+      attributes: (
+        <SuiBox width="8rem" textAlign="left">
+            <SuiProgress value={60} color="info" variant="gradient" label={false} />
+          </SuiBox>
+      )
+  }));
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -64,22 +86,9 @@ function Projects() {
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <SuiBox>
           <SuiTypography variant="h6" gutterBottom>
-            Projects
+            Collections
           </SuiTypography>
-          <SuiBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
-              }}
-            >
-              done
-            </Icon>
-            <SuiTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>30 done</strong> this month
-            </SuiTypography>
-          </SuiBox>
+          
         </SuiBox>
         <SuiBox color="text" px={2}>
           <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
