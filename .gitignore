@@ -61,3 +61,4 @@ dashboard/.env
 # next.js build output
 .next
 /.idea/
+dashboard_bckp/.env

@@ -19,6 +19,16 @@ import { useState } from "react";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import InboxIcon from '@mui/icons-material/Inbox';
+import DraftsIcon from '@mui/icons-material/Drafts';
+
+
 import MenuItem from "@mui/material/MenuItem";
 
 // Soft UI Dashboard React components
@@ -31,30 +41,29 @@ import { useGetCollections } from "custom/hooks/collections";
 import Table from "examples/Tables/Table";
 import { Avatar } from "@mui/material";
 import SuiAvatar from "components/SuiAvatar";
+import {Link} from "react-router-dom";
 
 // Data
 
 
-function Projects() {
+function Collections() {
   //const { columns, rows } = data();
   const [collections, isLoadingGet] = useGetCollections([]);
-  const columns = [
-      { name: "name", align: "left" },
-      { name: "idKey", align: "center" },
-      { name: "attributes", align: "center" }
-  ];
+  
   const rows = collections
-  .map(collection => ({
-      name: [(<Avatar>
-        {collection.name.charAt(0)}
-      </Avatar>),collection.name],
-      idKey: collection.id_key,
-      attributes: (
-        <SuiBox width="8rem" textAlign="left">
-            <SuiProgress value={60} color="info" variant="gradient" label={false} />
-          </SuiBox>
-      )
-  }));
+  .map(collection => (
+      <Link to={"/collections/" + collection.name}>
+    <ListItem disablePadding>
+            
+        <ListItemButton>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary={collection.name} />
+        </ListItemButton>
+      
+      </ListItem>
+      </Link>));
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -75,9 +84,8 @@ function Projects() {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
+      <MenuItem onClick={closeMenu}>Create Collection</MenuItem>
+    
     </Menu>
   );
 
@@ -107,7 +115,10 @@ function Projects() {
           },
         }}
       >
-        <Table columns={columns} rows={rows} />
+        <List>
+          {rows}
+        </List>
+        
       </SuiBox>
     </Card>
   );

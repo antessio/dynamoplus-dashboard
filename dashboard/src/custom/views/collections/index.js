@@ -34,14 +34,14 @@ import typography from "assets/theme/base/typography";
 
 // Dashboard layout components
 // import Projects from "layouts/dashboard/components/Projects";
-import Collections from "./components/Collections";
+
 
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 
-function Dashboard() {
+function Collection() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
 
@@ -136,7 +136,7 @@ function Dashboard() {
         </SuiBox> */}
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={8}>
-            <Collections />
+            
           </Grid>
         
         </Grid>
