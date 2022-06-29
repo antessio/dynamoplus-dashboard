@@ -1,3 +1,5 @@
+import authProvider from "../common/authorization/authProvider";
+
 const axios = require('axios');
 
 
@@ -15,14 +17,10 @@ instance.interceptors.response.use((response) => {
     const status = err.status || err.response.status;
     console.log("Response status " + status);
     if (status === 401) {
-        localStorage.removeItem('username');
-            localStorage.removeItem('token');
-            localStorage.removeItem('permissions');
+        authProvider.logout().then()
     }
     if (status == 403) {
-        localStorage.removeItem('username');
-            localStorage.removeItem('token');
-            localStorage.removeItem('permissions');
+        authProvider.logout().then()
         console.log("forbidden")
     }
     return Promise.reject(err);
@@ -32,7 +30,6 @@ instance.interceptors.response.use((response) => {
 export default {
     adminService: {
         login: async (username, password) => {
-            console.log(username+ " and " + password)
             const basicAuth = window.btoa(username + ':' + password);
 
             return instance.post("/admin/login", '', {headers: {'Authorization': `Basic ` + basicAuth}})
