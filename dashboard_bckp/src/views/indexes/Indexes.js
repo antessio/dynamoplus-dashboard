@@ -35,7 +35,8 @@ const Indexes = (props)=>{
               collection:{
                 name: collection
               },
-              name: indexName
+              configuration: values.configuration,
+              conditions: values.fields
             })
             setShowModal(false)
           }}

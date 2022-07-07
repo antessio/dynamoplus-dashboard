@@ -15,8 +15,8 @@ export default (props) => {
         <Card
             actions={[
                 <Link to={"/documents/" + collection.name}><Icon type="read" key="read"/></Link>,
-                <Icon type="edit" key="edit"/>,
-                <Icon type="search" key="query"/>,
+                // <Icon type="edit" key="edit"/>,
+                // <Icon type="search" key="query"/>,
             ]}
         >
 

@@ -34,8 +34,8 @@ function Collections() {
                     console.log(values)
                     createCollection({
                         name: values.documentName,
-                        idKey: values.idKey,
-                        orderingKey: values.orderingKey,
+                        id_key: values.idKey,
+                        ordering_key: values.orderingKey,
                         active: true
                     })
                     setShowModal(false)

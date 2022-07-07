@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
-import { Form, Input, Icon, Button,Modal } from 'antd';
+import { Form, Input, Icon, Button,Modal, Select } from 'antd';
+
+const { Option } = Select;
 
 const CreateIndexForm = (props)=>{
     const [showModal,setShowModal]=useState(props.show)
@@ -37,12 +39,12 @@ const CreateIndexForm = (props)=>{
   
     const add = (id) => {
       const { form } = props;
-      console.log("Adding after "+id)
+      
       // can use data-binding to get
       const keys = form.getFieldValue('keys');
-      console.log(keys)
+      
       const nextKeys = keys.concat(++id);
-      console.log(nextKeys)
+      
       // can use data-binding to set
       // important! notify form to detect changes
       form.setFieldsValue({
@@ -122,11 +124,19 @@ const CreateIndexForm = (props)=>{
               })(<Input onPressEnter={(e)=>{add(0)}}/>)}
             </Form.Item> */}
             {formItems}
+            <Form.Item label="Configuration">
+              {props.form.getFieldDecorator('configuration', {
+                rules: [],
+              })(<Select defaultValue="OPTIMIZE_WRITE" style={{ width: 120 }}>
+                <Option value="OPTIMIZE_WRITE">Optimize Write</Option>
+                <Option value="OPTIMIZE_READ">Optimize Read</Option>
+              </Select>)}
+              </Form.Item>
               <Form.Item label="Order by key">
               {props.form.getFieldDecorator('orderBy', {
                 rules: [],
               })(<Input />)}
-        </Form.Item>
+              </Form.Item>
         </Modal>
         </Form>
         
