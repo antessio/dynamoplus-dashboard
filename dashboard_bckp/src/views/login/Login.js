@@ -11,28 +11,17 @@ import authProvider from "../../common/authorization/authProvider";
 
 const FormItem = Form.Item;
 
-class NormalLoginForm extends React.Component {
+const Login = ()=>{
+    const [form] = Form.useForm();
 
-    checkUsername = (rule, value, callback) => {
-
-        // form.setFieldsValue ('pedro, manada');
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("handle login")
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
+    const handleSubmit = (values) => {
+        
                 console.log(values.username)
                 console.log(values.password)
                 authProvider.login(values.username, values.password)
                     .then(t => console.log(t))
-            }
-        });
     }
 
-    render() {
-        const {getFieldDecorator} = this.props.form;
         return (
             <div className="login">
                 <div className="login-container">
@@ -40,35 +29,24 @@ class NormalLoginForm extends React.Component {
 
                     <h2 style={{color: "red"}}>{process.env.NODE_ENV}</h2>
                     <h2 style={{color: "red"}}>{process.env.REACT_APP_API_BASE_PATH}</h2>
-                    <Form onSubmit={this.handleSubmit} className="login-form">
+                    <Form onFinish={handleSubmit} className="login-form">
 
-                        <FormItem>
-                            {getFieldDecorator('username', {
-                                rules: [
-                                    {required: true, message: 'Please input your username!'}
-                                ],
-                            })(
+                        <FormItem
+                            name={"username"}
+                            rules={[
+                                {required: true, message: 'Please input your username!'}
+                            ]}>
                                 <Input prefix={<UserOutlined />}
                                        placeholder="Username"/>
-                            )}
                         </FormItem>
 
-                        <FormItem>
-                            {getFieldDecorator('password', {
-                                rules: [{required: true, message: 'Please input your Password!'}],
-                            })(
+                        <FormItem name={"password"} rules={[{required: true, message: 'Please input your Password!'}]}>
                                 <Input prefix={<LockOutlined />}
                                        type="password" placeholder="Password"/>
-                            )}
                         </FormItem>
 
-                        <FormItem>
-                            {getFieldDecorator('remember', {
-                                valuePropName: 'checked',
-                                initialValue: true,
-                            })(
+                        <FormItem name={"remember"} initialValue={true} valuePropName={"checked"}>
                                 <Checkbox>Remember me</Checkbox>
-                            )}
                             <a className="login-form-forgot" href="">Forgot password</a>
                             <Button type="submit" htmlType="submit" className="login-form-button">
                                 Log in
@@ -80,8 +58,7 @@ class NormalLoginForm extends React.Component {
             </div>
         );
     }
-}
 
-const Login = NormalLoginForm;
+
 
 export default Login

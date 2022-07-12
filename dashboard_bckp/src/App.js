@@ -28,11 +28,10 @@ function App() {
                     <Layout>
                     <Routes>
                         <Route path="/" exact component={Home}/>
-                        <Route path="/login" exact component={Login}/>
+                        <Route path="/login" exact element={<Login />}/>
                         {/*<Route path="/profile" component={Profile}/>*/}
-                        <Route path="/collections" exact element={<PrivateRoute/>}>
-                            <Route path="/collections" exact element={<Collections/>} />
-                        </Route>
+                        <Route path="/collections" exact element={<PrivateRoute><Collections /></PrivateRoute>}  />
+
                         {/* <Route path="/indexes/:collection" component={Indexes}/>
                         <Route path="/documents/:collection" component={Documents}/> */}
                     </Routes>

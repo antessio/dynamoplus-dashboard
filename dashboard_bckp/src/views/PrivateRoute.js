@@ -64,10 +64,9 @@ const isAuthenticated = () => {
     return authorities.split(",");
 }*/
 
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-const PrivateRoute = (onForbidden, onUnauthorized) => {
-
-    return isAuthenticated() ? <Outlet /> : <Navigate to="/login" />;
-}
+const PrivateRoute = ({ auth, children }) => {
+  return isAuthenticated() ? children : <Navigate to="/login" />;
+};
 export default PrivateRoute;

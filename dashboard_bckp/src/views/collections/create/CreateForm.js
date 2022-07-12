@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
 import { Form, Input, Icon, Button,Modal,Checkbox, Select} from 'antd';
+import {MinusCircleOutlined} from '@ant-design/icons';
 const { Option } = Select;
 
 const CreateCollectionForm = (props)=>{
     const [showModal,setShowModal]=useState(props.show)
-    const { getFieldDecorator, getFieldValue } = props.form;
+    
 
     const formItemLayout = {
       labelCol: { span: 4 },
@@ -75,85 +76,81 @@ const CreateCollectionForm = (props)=>{
       labelCol: { span: 4 },
       wrapperCol: { span: 8, offset: 4 },
     };
-    const handleSubmit=(e)=>{
-        e.preventDefault();
-        props.form.validateFields((err, values) => {
-            if (!err) {
-              props.onSubmit(values)
-            }else{
-                props.onError(err)
-            }
-          });
+    const handleSubmit=(values)=>{
+        props.onSubmit(values)
     }
     const handleCancel=()=>{
         props.onCancel()
         setShowModal(false);
     }
   
-    
+    const handleSubmitButton = (e)=>{
+      console.log(e)
+    }
     return (
-        <Form onSubmit={handleSubmit} name='create_collection' >
+        <Form onFinish={(values)=>{
+          console.log("Values:", values)
+          
+        }} name='create_collection'
+        layout={"vertical"}
+        labelCol={{span: 4}}
+        wrapperCol={{span: 14}}>
         <Modal
           visible={showModal}
           title="Create new collection"
-          onOk={handleSubmit}
+          onOk={handleSubmitButton}
           onCancel={handleCancel}
           footer={[
             <Button key="back" onClick={handleCancel}>
               Cancel
             </Button>,
-            <Button key="submit" type="primary"  onClick={handleSubmit}>
+            <Button key="submit" type="primary"  onClick={handleSubmitButton}>
               Submit
             </Button>]}>
 
           
-            <Form.Item label="Document Name">
-          {props.form.getFieldDecorator('documentName', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please input the document name',
-                  },
-                ],
-              })(<Input />)}
+            <Form.Item label="Document Name"
+            name="documentName"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the document name',
+              },
+            ]}>
+          <Input />
             </Form.Item>
-            <Form.Item label="ID key">
-              {props.form.getFieldDecorator('idKey', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please input key identifier',
-                  },
-                ],
-              })(<Input />)}
+            <Form.Item label="ID key" name={"idKey"} rules={[
+                {
+                  required: true,
+                  message: 'Please input key identifier',
+                },
+              ]}><Input />
               </Form.Item>
-              <Form.Item label="Sort key">
-              {props.form.getFieldDecorator('orderingKey', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Please input sort key',
-                  },
-                ],
-              })(<Input />)}
+              <Form.Item label="Sort key" name={"orderingKey"}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input sort key',
+                },
+              ]}>
+              <Input />
         </Form.Item>
-        <Form.Item {...formTailLayout}>
-        {getFieldDecorator('active', {
-            initialValue: ['active'],
-          })(
-          <Checkbox >
+        {/* <Form.Item {...formTailLayout} name={"active"} initialValue={["active"]}>
+          <Checkbox>
             Active
           </Checkbox>
-          )}
-        </Form.Item>
-        {/* <Form.List name="fields">
-        {(fields, { addField, removeField }) => (
+        </Form.Item> */}
+        <Form.List name="fields">
+        {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
 
                 <Input.Group compact key={key}>
 
                 <Form.Item
+                style={{
+                  width: '30%',
+                }}
                   {...restField}
                   name={[name, 'type']}
                   rules={[
@@ -164,9 +161,7 @@ const CreateCollectionForm = (props)=>{
                   ]}
                 >
               <Select
-                style={{
-                  width: '30%',
-                }}
+                
                 defaultValue="STRING"
                 // onChange={value=>onTypeChange(value)}
               >
@@ -179,6 +174,7 @@ const CreateCollectionForm = (props)=>{
               </Form.Item>
               <Form.Item
                   {...restField}
+                  style={{ width: '60%', marginRight: 8 }} 
                   name={[name, 'field_name']}
                   rules={[
                     {
@@ -187,23 +183,23 @@ const CreateCollectionForm = (props)=>{
                     },
                   ]}
                 >
-                  <Input placeholder="field name" style={{ width: '60%', marginRight: 8 }} />
+                  <Input placeholder="field name"/>
                 </Form.Item>
-                <MinusCircleOutlined onClick={() => removeField(name)} />
+                <MinusCircleOutlined onClick={() => remove(name)} />
 
               
         </Input.Group>
 
             ))}
-            <Form.Item>
-              <Button type="dashed" onClick={() => addField()} block >
+            <Form.Item wrapperCol={{ span: 14, offset: 4 }}>
+              <Button type="dashed" onClick={() => add()} block >
                 Add field
               </Button>
             </Form.Item>
           </>
         )}
-      </Form.List> */}
-      <Form.List name="users">
+      </Form.List>
+      {/* <Form.List name="users">
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
@@ -249,7 +245,7 @@ const CreateCollectionForm = (props)=>{
             </Form.Item>
           </>
         )}
-      </Form.List>
+      </Form.List> */}
         </Modal>
         </Form>
         
