@@ -1,12 +1,75 @@
 import React, {useState} from 'react'
-import { Form, Input, Icon, Button,Modal,Checkbox } from 'antd';
+import { Form, Input, Icon, Button,Modal,Checkbox, Select} from 'antd';
+const { Option } = Select;
 
 const CreateCollectionForm = (props)=>{
     const [showModal,setShowModal]=useState(props.show)
     const { getFieldDecorator, getFieldValue } = props.form;
+
     const formItemLayout = {
       labelCol: { span: 4 },
       wrapperCol: { span: 8 },
+    };
+    const formItemLayoutWithOutLabel = {
+      wrapperCol: {
+        xs: { span: 4},
+        sm: { span: 8},
+      },
+    };
+    const onTypeChange = (value) => {
+      const { form } = props;
+      const val = {}
+    
+      form.setFieldsValue({
+        type: value
+      })
+      console.log("set value"+value)
+    };
+    const remove = k => {
+      const { form } = props;
+      // can use data-binding to get
+      const keys = form.getFieldValue('keys');
+      // We need at least one passenger
+      if (keys.length === 1) {
+        return;
+      }
+  
+      // can use data-binding to set
+      form.setFieldsValue({
+        keys: keys.filter(key => key !== k),
+      });
+    };
+  
+    const add = (id) => {
+      const { form } = props;
+      
+      // can use data-binding to get
+      const keys = form.getFieldValue('keys');
+
+      const type = form.getFieldValue("type_"+id)
+        // can use data-binding to set
+      // important! notify form to detect changes
+      console.log(id+" and "+type)
+      var nextKeys = [
+        ...keys,
+        {id: id+1, type: "STRING"}
+      ].map(v=>{
+        if(v.id==id){
+          return {
+            id:id,
+            type: type || "STRING"
+          }
+          }else{
+            return v;
+          }
+        });
+        
+  
+      form.setFieldsValue({
+        keys: nextKeys
+      });
+      
+      console.log(form.getFieldValue("keys"))
     };
     const formTailLayout = {
       labelCol: { span: 4 },
@@ -26,8 +89,10 @@ const CreateCollectionForm = (props)=>{
         props.onCancel()
         setShowModal(false);
     }
+  
+    
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} name='create_collection' >
         <Modal
           visible={showModal}
           title="Create new collection"
@@ -81,9 +146,113 @@ const CreateCollectionForm = (props)=>{
           </Checkbox>
           )}
         </Form.Item>
+        {/* <Form.List name="fields">
+        {(fields, { addField, removeField }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+
+                <Input.Group compact key={key}>
+
+                <Form.Item
+                  {...restField}
+                  name={[name, 'type']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Missing type',
+                    },
+                  ]}
+                >
+              <Select
+                style={{
+                  width: '30%',
+                }}
+                defaultValue="STRING"
+                // onChange={value=>onTypeChange(value)}
+              >
+                <Option value="STRING">String</Option>
+                <Option value="DATE">Date</Option>
+                <Option value="NUMBER">Number</Option>
+                <Option value="OBJECT">Object</Option>
+                <Option value="ARRAY">Array</Option>
+              </Select>
+              </Form.Item>
+              <Form.Item
+                  {...restField}
+                  name={[name, 'field_name']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Missing field name',
+                    },
+                  ]}
+                >
+                  <Input placeholder="field name" style={{ width: '60%', marginRight: 8 }} />
+                </Form.Item>
+                <MinusCircleOutlined onClick={() => removeField(name)} />
+
+              
+        </Input.Group>
+
+            ))}
+            <Form.Item>
+              <Button type="dashed" onClick={() => addField()} block >
+                Add field
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List> */}
+      <Form.List name="users">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <div
+                key={key}
+                style={{
+                  display: 'flex',
+                  marginBottom: 8,
+                }}
+                align="baseline"
+              >
+                <Form.Item
+                  {...restField}
+                  name={[name, 'first']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Missing first name',
+                    },
+                  ]}
+                >
+                  <Input placeholder="First Name" />
+                </Form.Item>
+                <Form.Item
+                  {...restField}
+                  name={[name, 'last']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Missing last name',
+                    },
+                  ]}
+                >
+                  <Input placeholder="Last Name" />
+                </Form.Item>
+                <Button onClick={() => remove(name)} />
+              </div>
+            ))}
+            <Form.Item>
+              <Button type="dashed" onClick={() => add()} block >
+                Add field
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
         </Modal>
         </Form>
         
     )
 }
-export default Form.create({ name: 'create_collection' })(CreateCollectionForm);
+export default CreateCollectionForm;

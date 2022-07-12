@@ -1,7 +1,8 @@
 import React from 'react'
-import {Tree, Card, Icon, Avatar, Badge, Collapse, Row, Col, Descriptions, Spin} from 'antd';
+import {Tree, Card, Avatar, Badge, Collapse, Row, Col, Descriptions, Spin} from 'antd';
 import {Link} from "react-router-dom";
 import {useCreateDocument, useGetDocuments} from '../../hooks/documents'
+import {ReadOutlined} from '@ant-design/icons'
 
 const {Panel} = Collapse;
 const {TreeNode} = Tree;
@@ -14,7 +15,9 @@ export default (props) => {
     return (
         <Card
             actions={[
-                <Link to={"/documents/" + collection.name}><Icon type="read" key="read"/></Link>,
+                <Link to={"/documents/" + collection.name}>
+                    <ReadOutlined />
+                    </Link>,
                 // <Icon type="edit" key="edit"/>,
                 // <Icon type="search" key="query"/>,
             ]}
@@ -72,10 +75,7 @@ const renderCollection = (collection) => {
         <Descriptions.Item label={"Auto generate ID"}>
             {collection.auto_generate_id ? "true" : "false"}
         </Descriptions.Item>
-        {collection.attributes && collection.attributes.map(renderAttribute)
-        })
-
-        }
+        {collection.attributes && collection.attributes.map(renderAttribute)}
     </Descriptions>)
 }
 const renderAttribute = (a) => {

@@ -1,9 +1,8 @@
 import React from 'react'
 import {Link} from "react-router-dom";
-import {Button, Icon} from 'antd';
 import {Menu} from 'antd';
 import authProvider from "../../common/authorization/authProvider";
-
+import {LogoutOutlined,LoginOutlined,DatabaseOutlined, HomeOutlined} from '@ant-design/icons';
 
 export default () => {
 
@@ -11,7 +10,7 @@ export default () => {
     return (<Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
         <Menu.Item key="1">
             <Link to="/">
-                <Icon type="home"/>
+                <HomeOutlined />
                 <span>Home</span>
             </Link>
             <ShowIf show={!isAuthenticated()}>
@@ -19,7 +18,7 @@ export default () => {
                     onClick={() =>
                         loginWithRedirect({})
                     }>
-                    <Icon type="login"/>
+                    <LoginOutlined />
                     <span>Login</span>
                 </div>
             </ShowIf>
@@ -27,7 +26,7 @@ export default () => {
         <Menu.Item key="2">
             <ShowIf show={isAuthenticated()}>
                 <Link to="/collections">
-                    <Icon type="database"/>
+                    <DatabaseOutlined />
                     <span>Collections</span>
                 </Link>
             </ShowIf>
@@ -38,7 +37,7 @@ export default () => {
                     onClick={() =>
                         logout()
                     }>
-                    <Icon type="logout"/>
+                    <LogoutOutlined />
                     <span>Logout</span>
                 </div>
             </ShowIf>

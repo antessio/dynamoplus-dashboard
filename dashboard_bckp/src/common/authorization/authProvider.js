@@ -30,6 +30,7 @@ export default {
     logout: () => {
         localStorage.removeItem('username');
         localStorage.removeItem('permissions');
+        localStorage.removeItem('token');
         window.location = '/login'
         return Promise.resolve();
     },

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import { Form, Input, Icon, Button,Modal, Select } from 'antd';
-
+import { Form, Input, Button,Modal, Select } from 'antd';
+import {MinusCircleOutlined} from '@ant-design/icons';
 const { Option } = Select;
 
 const CreateIndexForm = (props)=>{
@@ -89,9 +89,7 @@ const CreateIndexForm = (props)=>{
           ],
         })(<Input placeholder="field name" style={{ width: '60%', marginRight: 8 }} onPressEnter={(e)=>add(index)}/>)}
         {keys.length > 1 ? (
-          <Icon
-            className="dynamic-delete-button"
-            type="minus-circle-o"
+          <MinusCircleOutlined 
             onClick={() => remove(k)}
           />
         ) : null}
@@ -142,4 +140,4 @@ const CreateIndexForm = (props)=>{
         
     )
 }
-export default Form.create({ name: 'create_document' })(CreateIndexForm);
+export default CreateIndexForm;

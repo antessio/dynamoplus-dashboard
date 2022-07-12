@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { Table, List, Icon } from 'antd';
+import { Table, List } from 'antd';
 import { Link } from 'react-router-dom';
 import { Tag } from 'antd';
 import { Badge, Descriptions } from 'antd';
+import {ReadOutlined, SearchOutlined} from '@ant-design/icons';
 
 import Collection from "../Collection";
 
@@ -34,21 +35,9 @@ export default (props) => {
               width: 200,
               render: (_, record) =>{
                 
-
-                  return (<Descriptions bordered
-                    column={{
-                        xxl: 4,
-                        xl: 3,
-                        lg: 3,
-                        md: 3,
-                        sm: 2,
-                        xs: 1,
-                      }}>
-                        {record.fields ? (
-                    record.fields.map(field => (
-                    <Descriptions.Item label={field.name}>({field.type})</Descriptions.Item>))
-                  ) : null}        
-                  </Descriptions>)
+                  return record.fields && record.fields.map(field=><Tag key={field.name+"_"+field.type}>
+                    {field.name} - {field.type}
+                  </Tag>)
               },
             },
             {
@@ -56,7 +45,7 @@ export default (props) => {
                 width: 50,
                 render: (_, record) =>{
                     return (<Link to={"/indexes/" + record.name}>
-                            <Icon type="search"/>
+                            <SearchOutlined />
                             <span>Indexes</span>
                             </Link>)
                 }
@@ -66,7 +55,7 @@ export default (props) => {
                 width: 50,
                 render: (_, record) =>{
                     return (
-                        <Link to={"/documents/" + record.name}><Icon type="read" key="read"/></Link>
+                        <Link to={"/documents/" + record.name}><ReadOutlined /></Link>
                     )
                 }
             }

@@ -1,7 +1,7 @@
 import React from 'react'
-import { Card, Icon,Avatar, Badge, Collapse, Row, Col,Descriptions } from 'antd';
+import { Card,Avatar, Badge, Collapse, Row, Col,Descriptions } from 'antd';
 
-
+import {ReadOutlined,EditOutlined,SearchOutlined} from '@ant-design/icons';
 
 import { Link } from "react-router-dom";
 const { Panel } = Collapse;
@@ -12,9 +12,10 @@ export default (props)=>{
     return (    
     <Card 
     actions={[
-        <Link to={"/documents/"+document.name}><Icon type="read" key="read" /></Link>,
-        <Icon type="edit" key="edit" />,
-        <Icon type="search" key="query" />,
+        <Link to={"/documents/"+document.name}>
+            <ReadOutlined/></Link>,
+        <EditOutlined />,
+        <SearchOutlined/>,
       ]}
         >
     
@@ -39,7 +40,7 @@ export default (props)=>{
         <Descriptions.Item label="Sort key ">{document.orderingKey}</Descriptions.Item>
     </Descriptions>
     <Link to={"/indexes/"+document.name}>
-            <Icon type="search" />
+        <SearchOutlined/>
             <span >Indexes</span>
     </Link>
     <Collapse bordered={false} defaultActiveKey={[]}>

@@ -1,10 +1,12 @@
 import React from "react";
-import  { Layout, Icon } from 'antd';
+import  { Layout } from 'antd';
 
 import './Layout.css'
 
 import Logo from '../logo/Logo'
 import Menu from '../menu/Menu'
+
+import {MenuFoldOutlined,MenuUnfoldOutlined} from '@ant-design/icons';
 
 class MainLayout extends React.Component {
   state = {
@@ -26,11 +28,8 @@ class MainLayout extends React.Component {
         </Layout.Sider>
         <Layout>
           <Layout.Header style={{ background: '#fff', padding: 0 }}>
-            <Icon
-              className="trigger"
-              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-              onClick={this.toggle}
-            />
+
+            {this.state.collapsed?<MenuUnfoldOutlined />:<MenuFoldOutlined />}
           </Layout.Header>
           <Layout.Content
             style={{

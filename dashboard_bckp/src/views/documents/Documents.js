@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import {List, Spin, Button, Modal, Card, Tree, Icon} from 'antd'
+import {List, Spin, Button, Modal, Card, Tree, Switch} from 'antd'
 import './Documents.css'
 import Loading from '../../components/loading/Loading'
 import Document from '../../components/document/Document'
 import {useCreateDocument, useGetDocuments} from '../../hooks/documents'
 import {useGetCollection} from "../../hooks/collections";
+import {DatabaseOutlined, ContainerOutlined, SwitcherOutlined, SelectOutlined} from '@ant-design/icons'
 
 const {TreeNode} = Tree;
 
@@ -46,10 +47,10 @@ const Documents = (props) => {
             {isLoadingGetDocuments && <Spin/>}
             <Tree
                 showIcon
-                switcherIcon={<Icon type="database"/>}>
+                switcherIcon={<DatabaseOutlined />}>
                 {documents && collection && documents.map(
                     d => <TreeNode key={d[collection.id_key]}
-                                   icon={<Icon type="container"/>}
+                                   icon={<ContainerOutlined />}
                                    title={d[collection.id_key]}>
                         {Object.keys(d).map(k => renderDocumentFields(k, d[k]))}
                     </TreeNode>
@@ -69,18 +70,18 @@ const renderDocumentFields = (fieldKey, fieldValue) => {
     if (Array.isArray(fieldValue)) {
         return <TreeNode
             key={fieldKey}
-            icon={<Icon type="switcher"/>}
+            icon={<SwitcherOutlined />}
             title={fieldKey}>
             {fieldValue.map((subItem, i) => <TreeNode
                 key={fieldKey + "_" + i}
-                icon={<Icon type="switcher"/>}
+                icon={<SwitcherOutlined />}
                 title={i}>
                 {renderDocumentFields(fieldKey, subItem)}
             </TreeNode>)}
         </TreeNode>
     } else if (typeof fieldValue == "object") {
         return (<TreeNode key={fieldKey}
-                          icon={<Icon type="switcher"/>}
+                          icon={<SwitcherOutlined />}
                           title={fieldKey}>
                 {
                     Object.keys(fieldValue).map(k =>
@@ -93,7 +94,7 @@ const renderDocumentFields = (fieldKey, fieldValue) => {
     } else if (fieldValue) {
         return (<TreeNode
             key={fieldKey}
-            icon={<Icon type="select"/>}
+            icon={<SelectOutlined />}
             title={fieldKey + " : " + fieldValue}>
         </TreeNode>)
     } else {

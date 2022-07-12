@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-    Form, Icon, Input,
+    Form, Input,
     Button, Checkbox
 } from 'antd';
 
+import {UserOutlined,LockOutlined} from '@ant-design/icons';
 import './login.css';
 import authProvider from "../../common/authorization/authProvider";
 
@@ -47,7 +48,7 @@ class NormalLoginForm extends React.Component {
                                     {required: true, message: 'Please input your username!'}
                                 ],
                             })(
-                                <Input prefix={<Icon type="user" style={{fontSize: 13}}/>}
+                                <Input prefix={<UserOutlined />}
                                        placeholder="Username"/>
                             )}
                         </FormItem>
@@ -56,7 +57,7 @@ class NormalLoginForm extends React.Component {
                             {getFieldDecorator('password', {
                                 rules: [{required: true, message: 'Please input your Password!'}],
                             })(
-                                <Input prefix={<Icon type="lock" style={{fontSize: 13}}/>}
+                                <Input prefix={<LockOutlined />}
                                        type="password" placeholder="Password"/>
                             )}
                         </FormItem>
@@ -81,6 +82,6 @@ class NormalLoginForm extends React.Component {
     }
 }
 
-const Login = Form.create()(NormalLoginForm);
+const Login = NormalLoginForm;
 
 export default Login
