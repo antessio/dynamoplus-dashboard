@@ -8,6 +8,8 @@ const {TreeNode} = Tree;
 
 export default (props) => {
     const collection = props.collection
+    const indexes = props.indexes
+    
     /*
         const [documents, isLoadingGetDocuments] = useGetDocuments(collection.name, []);
     */
