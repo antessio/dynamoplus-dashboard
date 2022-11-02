@@ -20,6 +20,24 @@ export const useCreateCollection = () => {
     };
     return [collection, createCollection, isLoading]
 }
+export const useDeleteCollection = () => {
+    const {getTokenSilently} = authProvider
+    const [result, setResult] = useState(null)
+    const [isLoading, setLoading] = useState(false)
+    const deleteCollection = async (d) => {
+        setLoading(false)
+        try {
+            const token = await getTokenSilently()
+            const responseData = await dynamoplus.collectionService.deleteCollection(d, token)
+            setResult(true)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            setResult(false)
+        }
+    };
+    return [result,deleteCollection, isLoading]
+}
 
 export const useGetCollections = (dependencies) => {
     const {getTokenSilently} = authProvider

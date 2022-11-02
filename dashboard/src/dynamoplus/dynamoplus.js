@@ -150,6 +150,15 @@ export default {
                     console.log(err)
                 })
         },
+        deleteCollection: async (collectionName, token) => {
+            return instance.delete("/dynamoplus/collection/" + collectionName,
+                {headers: {'Authorization': `Bearer ${token}`}})
+                .then(response => {
+                    return response.data
+                }).catch(err => {
+                    console.log(err)
+                })
+        },
         getCollection: async (collectionName, token) => {
             return instance.get("/dynamoplus/collection/" + collectionName,
                 {headers: {'Authorization': `Bearer ${token}`}})

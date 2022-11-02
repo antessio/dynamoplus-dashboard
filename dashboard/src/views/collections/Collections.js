@@ -1,6 +1,8 @@
 import React, {useState} from "react";
-import {useCreateCollection, useGetCollections} from '../../hooks/collections';
-
+import {useCreateCollection, useGetCollections, useDeleteCollection} from '../../hooks/collections';
+import {
+    DeleteOutline
+  } from '@ant-design/icons';
 import {Button, List, Table,Icon,Avatar} from 'antd'
 import CreateCollectionForm from './create/CreateForm'
 import {Link} from "react-router-dom";
@@ -13,10 +15,68 @@ function Collections() {
     const [showModal, setShowModal] = useState(false)
     const [collections, isLoadingGet] = useGetCollections([]);
     const [createdCollection, createCollection, isLoadingCreate] = useCreateCollection()
+    const [deleteCollectionResult,deleteCollection,isLoadingDelete] = useDeleteCollection()
     const isLoading = isLoadingCreate || isLoadingGet
     if (isLoading && !collections) {
         return <Loading/>
     }
+    const renderCollections=(collections)=>{
+
+        const columns = [
+            {
+                title: "",
+                key: "avatar",
+                render: (_,record)=>(
+                <Avatar style={{backgroundColor: "#1890ff", color: "white", verticalAlign: 'middle'}} size="large">
+                    {record.name[0].toUpperCase()}
+                </Avatar>)
+            },
+            {
+                title: "Name",
+                key: 'name',
+                dataIndex: 'name'
+            },
+            {
+                title: 'Action',
+                key: 'action',
+                render: (_, record) => (
+                  <ul>
+                    <li>
+                        <Link to={"/indexes/" + record.name}>
+                            <Icon type="search"/>
+                            <span>Indexes</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={"/documents/" + record.name}><Icon type="read" key="read"/>
+                            <span>Documents</span>
+                        </Link>
+                    </li>
+                    </ul>
+                ),
+              },
+              {
+                title: "Delete",
+                key: "delete",
+                render: (_,record)=>{
+                    return <Button type="primary" icon="delete" onClick={(e)=>{
+                        deleteCollection(record.name)
+                    }} />
+                }
+              }
+        ]
+        const dataSource = collections.map(c=>{
+            return {
+                key: c.name,
+                name: c.name
+            }
+        })
+    
+    
+        return (<Table dataSource={dataSource} columns={columns} />)
+    
+    }
+
     return (
         <div>
             <h1>Collections</h1>
@@ -53,65 +113,7 @@ function Collections() {
     );
 }
 
-const renderCollections=(collections)=>{
 
-    const columns = [
-        {
-            title: "",
-            key: "avatar",
-            render: (_,record)=>(
-            <Avatar style={{backgroundColor: "#1890ff", color: "white", verticalAlign: 'middle'}} size="large">
-                {record.name[0].toUpperCase()}
-            </Avatar>)
-        },
-        {
-            title: "Name",
-            key: 'name',
-            dataIndex: 'name'
-        },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (_, record) => (
-              <ul>
-                <li>
-                    <Link to={"/indexes/" + record.name}>
-                        <Icon type="search"/>
-                        <span>Indexes</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link to={"/documents/" + record.name}><Icon type="read" key="read"/>
-                        <span>Documents</span>
-                    </Link>
-                </li>
-                </ul>
-            ),
-          },
-    ]
-    const dataSource = collections.map(c=>{
-        return {
-            key: c.name,
-            name: c.name
-        }
-    })
-
-
-    return (<Table dataSource={dataSource} columns={columns} />)
-
-    // return collections && <List
-    //     grid={{
-    //         gutter: 16,
-    //         xs: 1,
-    //         sm: 1,
-    //         md: 1,
-    //         lg: 1,
-    //         xl: 1,
-    //         xxl: 1,
-    //     }}
-    //     dataSource={collections}
-    //     renderItem={item => document(item)}/>
-}
 const document = (collection) => {
     
     return (
