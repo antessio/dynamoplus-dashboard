@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
-import { Form, Input, Icon, Button,Modal } from 'antd';
+import { Form, Input, Icon, Button,Modal,List,Typography, Select } from 'antd';
 
 const CreateIndexForm = (props)=>{
     const [showModal,setShowModal]=useState(props.show)
+    const collection = props.collection
     //const [docmentDefinition, setDocumentDefinition]=useState([])
     const { getFieldDecorator, getFieldValue } = props.form;
 
@@ -70,6 +71,8 @@ const CreateIndexForm = (props)=>{
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => (
       <Form.Item
+
+
         {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
         label={index === 0 ? 'Fields' : ''}
         required={false}
@@ -85,7 +88,13 @@ const CreateIndexForm = (props)=>{
               message: "Please input field name or delete this field.",
             },
           ],
-        })(<Input placeholder="field name" style={{ width: '60%', marginRight: 8 }} onPressEnter={(e)=>add(index)}/>)}
+        })(
+        <Select placeholder="field name" style={{ width: '60%', marginRight: 8 }} 
+        onChange={(e)=>add(index)}>
+        {collection.attributes.map(a=><Select.Option value={a.name} >{a.name} - {a.type}</Select.Option>)}
+        </Select>
+        // <Input placeholder="field name" style={{ width: '60%', marginRight: 8 }} onPressEnter={(e)=>add(index)}/>
+        )}
         {keys.length > 1 ? (
           <Icon
             className="dynamic-delete-button"
@@ -99,7 +108,7 @@ const CreateIndexForm = (props)=>{
         <Form onSubmit={handleSubmit}>
         <Modal
           visible={showModal}
-          title="Create new index"
+          title={"Create new index on "+collection.name}
           onOk={handleSubmit}
           onCancel={handleCancel}
           footer={[
@@ -109,7 +118,7 @@ const CreateIndexForm = (props)=>{
             <Button key="submit" type="primary"  onClick={handleSubmit}>
               Submit
             </Button>]}>
-
+            
                 
                 {/* <Form.Item label="Field Name" >
                 {props.form.getFieldDecorator('fieldName', {
@@ -125,7 +134,9 @@ const CreateIndexForm = (props)=>{
               <Form.Item label="Order by key">
               {props.form.getFieldDecorator('orderBy', {
                 rules: [],
-              })(<Input />)}
+              })(<Select placeholder="field name" style={{ width: '60%', marginRight: 8 }} >
+              {collection.attributes.map(a=><Select.Option value={a.name} >{a.name} - {a.type}</Select.Option>)}
+              </Select>)}
         </Form.Item>
         </Modal>
         </Form>

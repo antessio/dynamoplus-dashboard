@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 
 import './Indexes.css'
 import Loading from '../../components/loading/Loading'
-import {List,Button, Divider } from 'antd'
+import {List,Button, Divider,Typography,Avatar } from 'antd'
 import {useGetIndexes} from '../../hooks/indexes'
 import {useCreateIndex} from '../../hooks/indexes'
 import {useGetCollection} from '../../hooks/collections'
@@ -19,16 +19,13 @@ const Indexes = (props)=>{
         return <Loading />
       }
     return(<div>
-        <h2>Indexes</h2>
+
         
-        <Button type="primary" icon="plus"
-          onClick={()=>{setShowModal(true)}}>
-          Create
-        </Button>
         {showModal && 
           <CreateIndexForm 
           show={showModal} 
           onCancel={()=>{setShowModal(false)}} 
+          collection={collection}
           onSubmit={(values)=>{
             let indexName = values.fields.join("__")
             if(values.orderBy){
@@ -38,13 +35,17 @@ const Indexes = (props)=>{
               collection:{
                 name: collection_name
               },
-              name: indexName
+              conditions:values.fields
             })
             setShowModal(false)
           }}
           onError={(e)=>console.error(e)}
           />}
-        {!isLoadingCollection && collection && renderCollection(collection)}
+        {!isLoadingCollection && collection && Object.keys(collection).length>0 && renderCollection(collection)}
+        <Button type="primary" icon="plus"
+          onClick={()=>{setShowModal(true)}}>
+        </Button>
+        
         {!isLoading && indexes &&  <List
           dataSource={indexes}
           renderItem={item=>renderIndex(item)} /> }
@@ -54,14 +55,15 @@ const Indexes = (props)=>{
 
 const renderCollection = (collection) =>{
   return <>
-  <p>Collection: {collection.name}</p>
-  <h2>Fields:</h2>
+  
+  <Typography.Title>
+  <Avatar style={{backgroundColor: "#1890ff", color: "white", verticalAlign: 'middle'}} size="large">
+                {collection.name[0].toUpperCase()}
+            </Avatar>
+    {collection.name}</Typography.Title>
+    <Divider/>
+  
   <Divider/>
-  <List dataSource={collection.attributes} renderItem={item=>{
-    return (<List.Item key={item.name}>
-      {item.name} - {item.type}
-    </List.Item>)
-  }} />
   </>
   //return <p>{JSON.stringify(collection)}</p>
 }

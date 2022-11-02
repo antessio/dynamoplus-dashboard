@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useCreateCollection, useGetCollections} from '../../hooks/collections';
 
-import {Button, List, Table,Icon} from 'antd'
+import {Button, List, Table,Icon,Avatar} from 'antd'
 import CreateCollectionForm from './create/CreateForm'
 import {Link} from "react-router-dom";
 import './Collections.css'
@@ -54,7 +54,16 @@ function Collections() {
 }
 
 const renderCollections=(collections)=>{
+
     const columns = [
+        {
+            title: "",
+            key: "avatar",
+            render: (_,record)=>(
+            <Avatar style={{backgroundColor: "#1890ff", color: "white", verticalAlign: 'middle'}} size="large">
+                {record.name[0].toUpperCase()}
+            </Avatar>)
+        },
         {
             title: "Name",
             key: 'name',
